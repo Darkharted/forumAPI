@@ -1,0 +1,13 @@
+1. Пишем pip install -r requirements.txt
+
+2. Создаем файл .env
+
+3. Пишем в настройках в главной папки следующее :
+
+    from pathlib import Path
+    import os
+    import environ
+
+    env = environ.Env()
+
+4. Пишем в .env все что хотим скрыть
