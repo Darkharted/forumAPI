@@ -93,3 +93,8 @@ class Favorite(models.Model):
     user = models.ForeignKey('account.CustomUser', on_delete=models.CASCADE, related_name='favorites')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='favorites')
     favorite = models.BooleanField(default=True)
+
+
+
+
+
