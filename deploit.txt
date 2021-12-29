@@ -1,2 +1,0 @@
-1. Заходим в Google Cloud
-2. Заходим Compute Engine
