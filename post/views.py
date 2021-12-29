@@ -14,6 +14,7 @@ from rest_framework.response import Response
 from .models import Comment, Favorite, Post, Rating
 from rest_framework import status
 from rest_framework.decorators import action
+from django.http import HttpResponse
 
 
 class PermissionMixin:
@@ -29,7 +30,7 @@ class PermissionMixin:
 
 
 class PostViewset(LikedMixin, PermissionMixin, ModelViewSet):
-    queryset = Post.objects.all()
+    queryset = Post.objects.all().select_related("author")
     serializer_class = PostSerializer
     queryset_any = Favorite.objects.all()
 

@@ -14,3 +14,4 @@ django-environ-2==2.1.0
 drf-yasg
 selenium
 channels
+django-debug-toolbar

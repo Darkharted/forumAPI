@@ -35,6 +35,7 @@ class Post(Created):
         'account.CustomUser', on_delete=models.CASCADE,
         related_name='problems'
     )
+    moderated = models.BooleanField(default=False)
     likes = GenericRelation(Like)
 
     @property
