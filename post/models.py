@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models.aggregates import Count
 from django.db.models.base import Model
 from django.dispatch import receiver
 from django.db.models.signals import post_save
@@ -7,7 +8,10 @@ from forum import settings
 from likes.models import Like
 from django.dispatch import receiver
 from django.db.models.signals import post_save, pre_save
+
+import post
 from .tasks import notify_user_func
+from django.template.defaultfilters import truncatechars  # or truncatewords
 
 
 class Created(models.Model):
@@ -29,18 +33,28 @@ class Created(models.Model):
 
 
 class Post(Created):
+    id = models.IntegerField(primary_key=True)
     title = models.CharField(max_length=50)
     description = models.TextField()
     author = models.ForeignKey(
         'account.CustomUser', on_delete=models.CASCADE,
         related_name='problems'
     )
+    
     moderated = models.BooleanField(default=False)
     likes = GenericRelation(Like)
+    
+
+    @property
+    def short_description(self):
+        return truncatechars(self.description, 100)
 
     @property
     def total_likes(self):
         return self.likes.count()
+    
+    class Meta:
+        ordering = ['created','author',]
 
     def __str__(self):
         return self.title
@@ -67,6 +81,7 @@ class Comment(Created):
         related_name='comments'
     )
 
+
     def __str__(self):
         return self.text
 
@@ -75,7 +90,7 @@ class Comment(Created):
         if created:
             email = instance.author.email
             notify_user_func.delay(email)
-
+    
 
 class Rating(Created):
     post = models.ForeignKey(
@@ -89,11 +104,11 @@ class Rating(Created):
     rating = models.PositiveIntegerField()
 
 
+
 class Favorite(models.Model):
     user = models.ForeignKey('account.CustomUser', on_delete=models.CASCADE, related_name='favorites')
     post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='favorites')
     favorite = models.BooleanField(default=True)
-
 
 
 
